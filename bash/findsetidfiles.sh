@@ -12,5 +12,19 @@
 echo "Setuid files:"
 echo "============="
 find / -type f -executable -perm -4000 -ls 2>/dev/null | sort -k 3 | awk '{print $5,$3,$11}'
-#find /  -perm -4000 -ls 2> error | awk '{print $5,$3,$11}'
-echo ""
+#
+echo "============="
+
+
+echo "Task 1:"
+echo "Setuid files:"
+echo "============="
+find /  -perm -2000 -ls 2> /dev/null | awk '{print $5,$3,$11}'
+echo "============="
+
+echo "Task 2:"
+echo "10 largest files in the system:"
+#ls / -S -R -l --block-size=M  2>/dev/null| grep -v '^total'|grep -v '/:'| head^C
+#ls / -R  -lh  2>/dev/null |  sort -k 5 -n -r | head -n 10 | awk '{print $3,$1,$5/1024,"MB",$9}'
+find / -type f  -ls  2>/dev/null | sort -k 7 -n -r| head -n 10 |awk '{print $5,$3,$7/1024/1024,"MB",$11}'
+echo "============="
