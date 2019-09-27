@@ -35,9 +35,19 @@ nDie1=$(( RANDOM % $sides + 1))
 nDie2=$(( RANDOM % $sides + 1 ))
 # sum up the rolls
 nSum=$(( $nDie1 + $nDie2 ))
+echo "the sum of the dice : $nSum"
+mod=$(($nSum %2))
+
 nAvg=$(($nSum / 2))
 
+
+if [ $mod -eq 1 ]
+then
+  echo "the average of the dice is $nAvg.5"
+else
+  echo "the average of the dice is $nAvg"
+fi
 # display the results
-echo "the sum of the dice : $nSum"
-echo "the average of the dice is about: $nAvg"
+
+
 echo "Rolled $nDie1, $nDie2"
