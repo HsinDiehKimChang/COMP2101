@@ -29,7 +29,7 @@ echo "=========Improve script============="
 # Improve this script by re-organizing it to:
 #  put the number of sides in a variable which is used as the range for the random number
 sides=15
-echo "Rolling 2 $sides dice"
+echo "Rolling 2 $sides sides dice"
 # roll the dice and save the results
 nDie1=$(( RANDOM % $sides + 1))
 nDie2=$(( RANDOM % $sides + 1 ))
