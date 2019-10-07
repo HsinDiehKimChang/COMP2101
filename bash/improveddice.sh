@@ -29,23 +29,23 @@ echo "=========Improve script============="
 # Improve this script by re-organizing it to:
 #  put the number of sides in a variable which is used as the range for the random number
 sides=15
-<<<<<<< HEAD
+
 echo "Rolling 2 $sides dice"
-=======
+
 echo "Rolling 2 $sides sides dice"
->>>>>>> 37babb73beea41a3af18abf21e2987089d46a41f
+
 # roll the dice and save the results
 nDie1=$(( RANDOM % $sides + 1))
 nDie2=$(( RANDOM % $sides + 1 ))
 # sum up the rolls
 nSum=$(( $nDie1 + $nDie2 ))
-<<<<<<< HEAD
+
 nAvg=$(($nSum / 2))
 
 # display the results
 echo "the sum of the dice : $nSum"
 echo "the average of the dice is about: $nAvg"
-=======
+
 echo "the sum of the dice : $nSum"
 mod=$(($nSum %2))
 
@@ -61,5 +61,5 @@ fi
 # display the results
 
 
->>>>>>> 37babb73beea41a3af18abf21e2987089d46a41f
+
 echo "Rolled $nDie1, $nDie2"
