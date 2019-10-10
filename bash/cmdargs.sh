@@ -34,6 +34,7 @@ while [ $# -gt 0 ]; do
           echo "your debug level is $2"
         else
           echo "Error : debug level can only be a number "
+          exit
         fi
         ;;
 # TASK 3: put anything that wasn't recognized on the command line into a variable for use later in the script
