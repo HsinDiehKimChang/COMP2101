@@ -12,7 +12,20 @@
 # the LAN info in this script uses a hardcoded interface name of "eno1"
 #    - change eno1 to whatever interface you have and want to gather info about in order to test the script
 
+echo "======Modify by Hsin-Dieh Chang======"
+
+
 # TASK 1: Dynamically identify the list of interface names for the computer running the script, and use a for loop to generate the report for every interface except loopback
+declare -a interface
+
+for tmp in $(nmcli device status | awk '{print$1}');do
+  if [ $tmp != "DEVICE" ] && [ $tmp != "lo"  ];then
+    interface+=($tmp)
+  fi
+done
+
+#echo ${#interface[@]}
+
 
 ################
 # Data Gathering
@@ -20,6 +33,8 @@
 # the first part is run once to get information about the host
 # grep is used to filter ip command output so we don't have extra junk in our output
 # stream editing with sed and awk are used to extract only the data we want displayed
+
+echo "Per-host report"
 
 #####
 # Once per host report
@@ -60,8 +75,15 @@ EOF
 #####
 # Per-interface report
 #####
-# define the interface being summarized
-interface="eno1"
+## define the interface being summarized
+#interface="eno1"
+
+echo "      "
+
+echo   "Per-interface report"
+
+for (( i=0;i < ${#interface[@]}; i++ ));do
+
 
 # Find an address and hostname for the interface being summarized
 # we are assuming there is only one IPV4 address assigned to this interface
@@ -74,7 +96,7 @@ network_number=$(cut -d / -f 1 <<<"$network_address")
 network_name=$(getent networks $network_number|awk '{print $1}')
 
 cat <<EOF
-Interface $interface:
+Interface $((i+1)) - $interface:
 ===============
 Address         : $ipv4_address
 Name            : $ipv4_hostname
@@ -82,6 +104,8 @@ Network Address : $network_address
 Network Name    : $network_name
 
 EOF
+
+done
 #####
 # End of per-interface report
 #####
