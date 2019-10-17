@@ -46,15 +46,15 @@ EOF
 # Task: Add traps for the INT and QUIT signals. If the script receives an INT signal,
 #       reset the count to the maximum and tell the user they are not allowed to interrupt
 function ctrlC {
-  echo "You are not allowed to interrupt"
-  echo "reset the count"
+  echo "  You are not allowed to interrupt"
+  echo "Reset the count"
   sleepCount=$(($numberOfSleeps+1))
 }
 
 #       If the script receives a QUIT signal, tell the user they found the secret
 #       to getting out of the script and exit immediately.
 function ctrl {
-  echo "You found the secret to getting out of the script"
+  echo "  You found the secret to getting out of the script"
   exit 1
 }
 
