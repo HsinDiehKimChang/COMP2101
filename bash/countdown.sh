@@ -54,7 +54,7 @@ function ctrlC {
 #       If the script receives a QUIT signal, tell the user they found the secret
 #       to getting out of the script and exit immediately.
 function ctrl {
-  echo "You found the secretto getting out of the script"
+  echo "You found the secret to getting out of the script"
   exit 1
 }
 
