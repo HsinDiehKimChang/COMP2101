@@ -13,12 +13,29 @@ ForEach-Object {
 } 
 
 
-$disk=@()
 
-$disk+=Get-WmiObject -class win32_diskdrive
-$disk+=Get-WmiObject -class  win32_logicaldisk
 
-$disk | ft -Property model
+$drives=Get-WmiObject -class win32_diskdrive
+$logicaldisk=Get-WmiObject -class  win32_logicaldisk
+#$disk+=Get-WmiObject -class  win32_diskpartition
+
+$diskconfigs=foreach ( $disk in $logicaldisk ) {
+ 
+ $part= $disk.GetRelated('win32_diskpartition')
+
+ new-object -TypeName psobject -Property @{
+     "Vendor" = $drives.manufacturer
+     "model" = $drives.model
+     "Filesystem Drive"=$part.name
+     "Size(GB)"=$part.size/1gb |  where-object {$part.size -ne 0}
+     "Free space(GB)"=$part.freespace/1gb |  where-object {$part.freespace -ne $null}
+     #"% Free"=100*$part.freespace/$_.size |  where-object {$part.size -ne 0}
+ }
+} 
+
+$diskconfigs |Format-Table -AutoSize "Vendor","model","Filesystem Drive","Size(GB)","Free space(GB)","% Free"
+
+
 
 #get-wmiobject -class win32_processor  | Where-Object MaxClockSpeed -ne $null |
 #format-table -autosize  @{Label="Speed"; Expression={$_.MaxClockSpeed}},
