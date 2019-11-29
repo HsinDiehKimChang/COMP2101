@@ -1,6 +1,7 @@
 ﻿
 Write-Output "System report (human-friendly)"
 
+
 get-wmiobject -class win32_computersystem | 
 Format-list  @{Label="System Hardware Description"; Expression={$_.description}}
 
@@ -37,7 +38,7 @@ foreach {
 Format-Table -AutoSize "Vendor","Description", "Size(MB)", "Speed(MHz)", "Bank", "Slot"
 "Total RAM: ${totalmemory}MB "
 
-$disk=@()
+#$disk=@()
 
 $disk+=Get-WmiObject -class win32_diskdrive
 $disk+=Get-WmiObject -class  win32_logicaldisk

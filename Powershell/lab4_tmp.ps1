@@ -1,6 +1,6 @@
 ﻿#lab4
 
-ForEach-Object {
+#ForEach-Object {
 
 #Get-WmiObject -class win32_operatingsystem | Select-Object CSname,version |fl
 #Get-WmiObject -class win32_computersystem | Select-Object description |fl
@@ -10,30 +10,49 @@ ForEach-Object {
   #Get-WmiObject -class win32_diskdrive, win32_logicaldisk | fl
   #Get-WmiObject -class | fl
 
-} 
+#tfdsa} 
 
 
 
+#$disk=Get-WmiObject -class win32_diskdrive
+$disk=Get-WmiObject -class  win32_logicaldisk
 
-$drives=Get-WmiObject -class win32_diskdrive
-$logicaldisk=Get-WmiObject -class  win32_logicaldisk
-#$disk+=Get-WmiObject -class  win32_diskpartition
-
-$diskconfigs=foreach ( $disk in $logicaldisk ) {
- 
- $part= $disk.GetRelated('win32_diskpartition')
+$disk| where-object size -gt 0 | 
+foreach {
+$drive = $disk.GetRelated('win32_diskpartition')
+$part = $drive.GetRelated('win32_diskdrive')
 
  new-object -TypeName psobject -Property @{
-     "Vendor" = $drives.manufacturer
-     "model" = $drives.model
-     "Filesystem Drive"=$part.name
-     "Size(GB)"=$part.size/1gb |  where-object {$part.size -ne 0}
-     "Free space(GB)"=$part.freespace/1gb |  where-object {$part.freespace -ne $null}
-     #"% Free"=100*$part.freespace/$_.size |  where-object {$part.size -ne 0}
- }
-} 
+ "Vendor" = $part.manufacturer
+ "model" = $part.model
+ #"Filesystem Drive"=$part.name
+ "Size(GB)"=$part.size/1gb 
+ "Free space(GB)"=$disk.freespace/1gb 
+ "% Free"=100*$disk.freespace/$part.size  
+}
+} |
+Format-Table -AutoSize "Vendor","model","Size(GB)","Free space(GB)","% Free"
 
-$diskconfigs |Format-Table -AutoSize "Vendor","model","Filesystem Drive","Size(GB)","Free space(GB)","% Free"
+
+#$drives=Get-WmiObject -class win32_diskdrive
+#$logicaldisk=Get-WmiObject -class  win32_logicaldisk
+#$disk+=Get-WmiObject -class  win32_diskpartition
+
+#$diskconfigs=foreach ( $disk in $drives ) {
+ 
+ #$part = $disk.GetRelated('win32_logicaldisk') 
+
+ #new-object -TypeName psobject -Property @{
+#     "Vendor" = $part.manufacturer
+#     "model" = $part.model
+#     "Filesystem Drive"=$part.devicei
+#     "Size(GB)"=$part.size/1gb 
+#     "Free space(GB)"=$part.freespace/1gb 
+#     "% Free"=100*$part.freespace/$_.size
+# }
+#} 
+
+#$diskconfigs |Format-Table -AutoSize "Vendor","model","Filesystem Drive","Size(GB)","Free space(GB)"
 
 
 
