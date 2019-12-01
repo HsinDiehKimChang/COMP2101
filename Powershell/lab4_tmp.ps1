@@ -12,26 +12,23 @@
 
 #tfdsa} 
 
+$disks=Get-WmiObject -class  win32_logicaldisk |  where-object size -gt 0 
 
 
-#$disk=Get-WmiObject -class win32_diskdrive
-$disk=Get-WmiObject -class  win32_logicaldisk
-
-$disk| where-object size -gt 0 | 
-foreach {
-$drive = $disk.GetRelated('win32_diskpartition')
-$part = $drive.GetRelated('win32_diskdrive')
-
- new-object -TypeName psobject -Property @{
- "Vendor" = $part.manufacturer
- "model" = $part.model
- #"Filesystem Drive"=$part.name
- "Size(GB)"=$part.size/1gb 
- "Free space(GB)"=$disk.freespace/1gb 
- "% Free"=100*$disk.freespace/$part.size  
+$diskConfig=foreach ($disk in $disks) {
+$part = $disks.GetRelated('win32_diskpartition')
+$drive = $part.GetRelated('win32_diskdrive')
+    
+     new-object -TypeName psobject -Property @{
+     "Vendor" = $drive.manufacturer
+     "model" = $drive.model
+     #"Filesystem Drive"=$part.name
+     "Size(GB)"=$drive.size/1gb -as [int]
+     "Free space(GB)"=$disks.freespace/1gb -as [int] 
+     "% Free"=100*$disks.freespace/$drive.size  -as [int]
 }
-} |
-Format-Table -AutoSize "Vendor","model","Size(GB)","Free space(GB)","% Free"
+} 
+$diskConfig|Format-Table -AutoSize "Vendor","model","Size(GB)","Free space(GB)","% Free"
 
 
 #$drives=Get-WmiObject -class win32_diskdrive

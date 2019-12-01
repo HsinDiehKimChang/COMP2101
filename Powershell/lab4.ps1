@@ -38,24 +38,24 @@ foreach {
 Format-Table -AutoSize "Vendor","Description", "Size(MB)", "Speed(MHz)", "Bank", "Slot"
 "Total RAM: ${totalmemory}MB "
 
-#$disk=@()
 
-$disk+=Get-WmiObject -class win32_diskdrive
-$disk+=Get-WmiObject -class  win32_logicaldisk
-$disk+=Get-WmiObject -class  win32_diskpartition
+$disks=Get-WmiObject -class  win32_logicaldisk |  where-object size -gt 0 
 
-$disk| where-object size -gt 0 | 
-foreach {
- new-object -TypeName psobject -Property @{
- "Vendor" = $_.manufacturer
- "model" = $_.model
- "Filesystem Drive"=$_.name
- "Size(GB)"=$_.size/1gb  -as [int]
- "Free space(GB)"=$_.freespace/1gb -as [int] |where-object {$_.freespace -ne 0}
- "% Free"=100*$_.freespace/$_.size -as [int] |where-object {$_.freespace -ne 0}
- }
-} |
-Format-Table -AutoSize "Vendor","model","Filesystem Drive","Size(GB)","Free space(GB)","% Free"
+
+$diskConfig=foreach ($disk in $disks) {
+$part = $disks.GetRelated('win32_diskpartition')
+$drive = $part.GetRelated('win32_diskdrive')
+    
+     new-object -TypeName psobject -Property @{
+     "Vendor" = $drive.manufacturer
+     "model" = $drive.model
+     #"Filesystem Drive"=$part.name
+     "Size(GB)"=$drive.size/1gb -as [int]
+     "Free space(GB)"=$disks.freespace/1gb -as [int] 
+     "% Free"=100*$disks.freespace/$drive.size  -as [int]
+}
+} 
+$diskConfig|Format-Table -AutoSize "Vendor","model","Size(GB)","Free space(GB)","% Free"
 
 
 get-wmiobject -class win32_videocontroller |
