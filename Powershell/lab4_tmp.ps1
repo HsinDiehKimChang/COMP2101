@@ -1,22 +1,23 @@
 ﻿#lab4
 
-#ForEach-Object {
+<#
+ForEach-Object {
 
-#Get-WmiObject -class win32_operatingsystem | Select-Object CSname,version |fl
-#Get-WmiObject -class win32_computersystem | Select-Object description |fl
-#Get-WmiObject -class win32_processor |  Select-Object name,MaxClockSpeed,NumberOfCores,L1CacheSize,L2CacheSize,L3CacheSize |ft
+Get-WmiObject -class win32_operatingsystem | Select-Object CSname,version |fl
+Get-WmiObject -class win32_computersystem | Select-Object description |fl
+Get-WmiObject -class win32_processor |  Select-Object name,MaxClockSpeed,NumberOfCores,L1CacheSize,L2CacheSize,L3CacheSize |ft
 
-  #Get-WmiObject -class win32_diskdrive | Select-Object Manufacturer,model 
-  #Get-WmiObject -class win32_diskdrive, win32_logicaldisk | fl
-  #Get-WmiObject -class | fl
+  Get-WmiObject -class win32_diskdrive | Select-Object Manufacturer,model 
+  Get-WmiObject -class win32_diskdrive, win32_logicaldisk | fl
+  Get-WmiObject -class | fl} 
 
-#tfdsa} 
+#>
 
 $disks=Get-WmiObject -class  win32_logicaldisk |  where-object size -gt 0 
 
 
 $diskConfig=foreach ($disk in $disks) {
-$part = $disks.GetRelated('win32_diskpartition')
+$part = $disk.GetRelated('win32_diskpartition')
 $drive = $part.GetRelated('win32_diskdrive')
     
      new-object -TypeName psobject -Property @{
@@ -24,8 +25,9 @@ $drive = $part.GetRelated('win32_diskdrive')
      "model" = $drive.model
      #"Filesystem Drive"=$part.name
      "Size(GB)"=$drive.size/1gb -as [int]
-     "Free space(GB)"=$disks.freespace/1gb -as [int] 
-     "% Free"=100*$disks.freespace/$drive.size  -as [int]
+     "Free space(GB)"=$disk.freespace/1gb -as [int] 
+     "% Free"=100*$disk.freespace/$drive.size  -as [int]
+
 }
 } 
 $diskConfig|Format-Table -AutoSize "Vendor","model","Size(GB)","Free space(GB)","% Free"
